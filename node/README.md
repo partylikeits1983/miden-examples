@@ -17,3 +17,10 @@ miden-node start \
 --config node/config/miden-node.toml \
 node
 ```
+
+### Resetting the Miden node:
+```
+rm -rf rust-client/store.sqlite3 
+rm -rf node/storage/accounts
+rm -rf node/storage/blocks
+```
