@@ -16,3 +16,4 @@ tokio = { version = "1.40", features = ["rt-multi-thread", "net", "macros"] }
 tracing = { version = "0.1" }
 figment = { version = "0.10", features = ["toml", "env"] }
 miden-crypto = { version = "0.13.0", features = ["executable"] }
+rand_chacha = "0.3.1"

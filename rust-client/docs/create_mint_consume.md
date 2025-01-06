@@ -42,8 +42,8 @@ A basic wallet account for Alice is created.
 
 ```rust
 let alice_template = AccountTemplate::BasicWallet {
-    mutable_code: false,
-    storage_mode: AccountStorageMode::Private,
+    mutable_code: true,
+    storage_mode: AccountStorageMode::Public,
 };
 
 let (alice_account, _alice_seed) = client.new_account(alice_template).await?;
@@ -86,7 +86,7 @@ for i in 1..=5 {
     let transaction_request = TransactionRequest::mint_fungible_asset(
         fungible_asset.clone(),
         alice_account.id(),
-        NoteType::Private,
+        NoteType::Public,
         client.rng(),
     )
     .expect("Failed to create mint transaction request.");
@@ -145,7 +145,7 @@ for i in 1..=5 {
     let transaction_request = TransactionRequest::pay_to_id(
         payment_transaction,
         None,              // recall_height: None
-        NoteType::Private, // note type is private
+        NoteType::Public,  // note type
         client.rng(),      // rng
     )
     .expect("Failed to create payment transaction request.");

@@ -1,86 +1,20 @@
 use rand::Rng;
-use serde::Deserialize;
-use std::path::Path;
-use std::sync::Arc;
 
 use miden_client::{
     accounts::{AccountId, AccountStorageMode, AccountTemplate, AccountType},
     assets::{FungibleAsset, TokenSymbol},
-    config::RpcConfig,
-    crypto::RpoRandomCoin,
     notes::NoteType,
-    rpc::TonicRpcClient,
-    store::sqlite_store::config::SqliteStoreConfig,
-    store::{sqlite_store::SqliteStore, StoreAuthenticator},
-    transactions::{
-        LocalTransactionProver, PaymentTransactionData, ProvingOptions, TransactionRequest,
-    },
-    Client, ClientError, Felt,
+    transactions::{PaymentTransactionData, TransactionRequest},
+    ClientError,
 };
 
-use figment::{
-    providers::{Format, Toml},
-    Figment,
-};
+use rust_client::common::initialize_client;
 
 use tokio::time::Duration;
 
-const CLIENT_CONFIG_FILE_NAME: &str = "miden-client.toml";
-
-#[derive(Debug, Deserialize)]
-pub struct ClientConfig {
-    /// Describes settings related to the RPC endpoint
-    pub rpc: RpcConfig,
-    /// Describes settings related to the store.
-    pub store: SqliteStoreConfig,
-}
-
-impl ClientConfig {
-    fn from_file<P: AsRef<Path>>(path: P) -> Self {
-        let figment = Figment::from(Toml::file(path));
-        figment.extract().unwrap_or_else(|e| {
-            panic!("Failed to load client config: {}", e);
-        })
-    }
-}
-
 #[tokio::main]
 async fn main() -> Result<(), ClientError> {
-    //------------------------------------------------------------
-    // Load client configuration
-    //------------------------------------------------------------
-    let client_config = ClientConfig::from_file(CLIENT_CONFIG_FILE_NAME);
-
-    // Initialize the store
-    let store = SqliteStore::new(&client_config.store)
-        .await
-        .map_err(ClientError::StoreError)?;
-    let arc_store = Arc::new(store);
-
-    // Seed RNG for cryptographic randomness
-    let mut seed_rng = rand::thread_rng();
-    let coin_seed: [u64; 4] = seed_rng.gen();
-    let rng_for_auth = RpoRandomCoin::new(coin_seed.map(Felt::new));
-    let rng_for_client = RpoRandomCoin::new(coin_seed.map(Felt::new));
-
-    // Create authenticator
-    let authenticator = StoreAuthenticator::new_with_rng(arc_store.clone(), rng_for_auth);
-
-    // Create local transaction prover
-    let tx_prover = LocalTransactionProver::new(ProvingOptions::default());
-
-    // Create the RPC client
-    let rpc_client = Box::new(TonicRpcClient::new(&client_config.rpc));
-
-    // Instantiate the client
-    let mut client = Client::new(
-        rpc_client,
-        rng_for_client,
-        arc_store.clone(),
-        Arc::new(authenticator),
-        Arc::new(tx_prover),
-        false,
-    );
+    let mut client = initialize_client().await?;
 
     //------------------------------------------------------------
     // STEP 1: Create a basic wallet account for Alice
@@ -88,8 +22,8 @@ async fn main() -> Result<(), ClientError> {
     println!("\n[STEP 1] Creating new account for Alice");
 
     let alice_template = AccountTemplate::BasicWallet {
-        mutable_code: false,
-        storage_mode: AccountStorageMode::Private,
+        mutable_code: true,
+        storage_mode: AccountStorageMode::Public,
     };
 
     // Create Alice's account
@@ -105,9 +39,9 @@ async fn main() -> Result<(), ClientError> {
     println!("\n[STEP 2] Deploying a new fungible faucet.");
 
     // Token configuration
-    let token_symbol_str = "BTC";
+    let token_symbol_str = "POL";
     let decimals = 8;
-    let max_supply = 21_000_000;
+    let max_supply = 1_000_000;
 
     let faucet_template = AccountTemplate::FungibleFaucet {
         token_symbol: TokenSymbol::new(token_symbol_str).expect("Token symbol is invalid"),
@@ -139,7 +73,7 @@ async fn main() -> Result<(), ClientError> {
         let transaction_request = TransactionRequest::mint_fungible_asset(
             fungible_asset.clone(),
             alice_account.id(),
-            NoteType::Private,
+            NoteType::Public,
             client.rng(),
         )
         .expect("Failed to create mint transaction request.");
@@ -225,9 +159,9 @@ async fn main() -> Result<(), ClientError> {
         // Create a pay-to-id transaction
         let transaction_request = TransactionRequest::pay_to_id(
             payment_transaction,
-            None,              // recall_height: None
-            NoteType::Private, // note type is private
-            client.rng(),      // rng
+            None,             // recall_height: None
+            NoteType::Public, // note type is public
+            client.rng(),     // rng
         )
         .expect("Failed to create payment transaction request.");
 

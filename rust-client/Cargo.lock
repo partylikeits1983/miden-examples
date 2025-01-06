@@ -2065,6 +2065,7 @@ dependencies = [
  "miden-objects",
  "miden-tx",
  "rand",
+ "rand_chacha",
  "serde",
  "serde_json",
  "tokio",
