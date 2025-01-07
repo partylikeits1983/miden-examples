@@ -14,8 +14,8 @@ export async function mintTokens(
     console.log('wallet and faucet', _walletId, _faucetId);
     console.log('hex:', _walletId.to_string(), _faucetId.to_string());
 
-    // await webClient.fetch_and_cache_account_auth_by_pub_key(_faucetId);
-    // await webClient.sync_state();
+    await webClient.fetch_and_cache_account_auth_by_pub_key(_faucetId);
+    await webClient.sync_state();
 
     console.log(_walletId.is_faucet(), _faucetId.is_faucet());
 
@@ -28,10 +28,12 @@ export async function mintTokens(
       throw new Error('No accounts found.');
     }
 
-    const lastAccount = accounts[accounts.length - 1].id();
+    // const lastAccount = accounts[accounts.length - 1].id();
+
+    console.log("calling mint");
 
     const newTxnResult = await webClient.new_mint_transaction(
-      lastAccount,
+      _walletId,
       _faucetId,
       NoteType.public(),
       BigInt(100)

@@ -19,6 +19,10 @@ export async function createWallet(): Promise<string> {
     const accounts: AccountHeader[] = await webClient.get_accounts();
     console.log('length:', accounts.length);
 
+
+    // await webClient.getAccountAuthByPubKey(accountId);
+
+
     return accountId.id().to_string();
   } catch (error) {
     console.error('Error setting up wallet:', error);
