@@ -1,9 +1,9 @@
-// src/App.tsx
-
 import { useState } from 'react';
 import { createWallet } from './lib/createWallet';
 import { setupFaucet } from './lib/createFaucet';
 import { mintTokens } from './lib/mintTokens';
+import { syncState } from './lib/syncState';
+import ClientSingleton from './lib/createClient'; // Import ClientSingleton
 
 import './App.css';
 
@@ -11,18 +11,38 @@ function App() {
   const [walletId, setWalletId] = useState<string | null>(null);
   const [faucetId, setFaucetId] = useState<string | null>(null);
   const [noteId, setNoteId] = useState<string | null>(null);
+  const [syncResult, setSyncResult] = useState<boolean | null>(null);
 
   const [error, setError] = useState<string | null>(null);
+  const [isCreatingClient, setIsCreatingClient] = useState<boolean>(false);
+  const [clientInitialized, setClientInitialized] = useState<boolean>(false);
   const [isCreatingWallet, setIsCreatingWallet] = useState<boolean>(false);
   const [isSettingUpFaucet, setIsSettingUpFaucet] = useState<boolean>(false);
   const [isMintingTokens, setIsMintingTokens] = useState<boolean>(false);
+  const [isSyncingState, setIsSyncingState] = useState<boolean>(false);
+
+  const handleCreateClient = async () => {
+    setError(null);
+    setIsCreatingClient(true);
+    try {
+      // Add a small delay to ensure UI updates
+      await new Promise((resolve) => setTimeout(resolve, 300));
+      await ClientSingleton.getInstance();
+      setClientInitialized(true);
+      console.log('Client Initialized');
+    } catch (err: any) {
+      console.error(err);
+      setError(err.message || 'Error creating client');
+    } finally {
+      setIsCreatingClient(false);
+    }
+  };
 
   const handleCreateWallet = async () => {
     setError(null);
-    setWalletId(null); // Reset the wallet ID before starting
+    setWalletId(null);
     setIsCreatingWallet(true);
     try {
-      // Add a small delay to ensure UI updates
       await new Promise((resolve) => setTimeout(resolve, 300));
       const id = await createWallet();
       setWalletId(id);
@@ -37,10 +57,9 @@ function App() {
 
   const handleSetupFaucet = async () => {
     setError(null);
-    setFaucetId(null); // Reset the faucet ID before starting
+    setFaucetId(null);
     setIsSettingUpFaucet(true);
     try {
-      // Add a small delay to ensure UI updates
       await new Promise((resolve) => setTimeout(resolve, 300));
       const id = await setupFaucet();
       setFaucetId(id);
@@ -55,10 +74,9 @@ function App() {
 
   const handleMintTokens = async () => {
     setError(null);
-    setNoteId(null); // Reset the note ID before starting
+    setNoteId(null);
     setIsMintingTokens(true);
     try {
-      // Add a small delay to ensure UI updates
       await new Promise((resolve) => setTimeout(resolve, 300));
       if (!walletId || !faucetId) {
         throw new Error('Wallet ID and Faucet ID are required to mint tokens');
@@ -74,14 +92,52 @@ function App() {
     }
   };
 
+  const handleSyncState = async () => {
+    setError(null);
+    setSyncResult(null);
+    setIsSyncingState(true);
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 300));
+      const result = await syncState();
+      setSyncResult(result);
+      console.log('Sync result:', result);
+    } catch (err: any) {
+      console.error(err);
+      setError(err.message || 'Error syncing state');
+    } finally {
+      setIsSyncingState(false);
+    }
+  };
+
   return (
     <div className="container">
       <h1>Miden SDK Demo</h1>
       <div className="content">
+        {/* Create Client */}
+        <button
+          onClick={handleCreateClient}
+          disabled={
+            isCreatingClient ||
+            isCreatingWallet ||
+            isSettingUpFaucet ||
+            isMintingTokens ||
+            isSyncingState
+          }
+          className="button"
+        >
+          {isCreatingClient ? 'Loading...' : 'Create Client'}
+        </button>
+        {clientInitialized && <p>Client has been initialized.</p>}
+
         {/* Wallet Creation */}
         <button
           onClick={handleCreateWallet}
-          disabled={isCreatingWallet || isSettingUpFaucet || isMintingTokens}
+          disabled={
+            isCreatingWallet ||
+            isSettingUpFaucet ||
+            isMintingTokens ||
+            isSyncingState
+          }
           className="button"
         >
           {isCreatingWallet ? 'Loading...' : 'Create Wallet'}
@@ -91,7 +147,12 @@ function App() {
         {/* Faucet Setup */}
         <button
           onClick={handleSetupFaucet}
-          disabled={isSettingUpFaucet || isCreatingWallet || isMintingTokens}
+          disabled={
+            isSettingUpFaucet ||
+            isCreatingWallet ||
+            isMintingTokens ||
+            isSyncingState
+          }
           className="button"
         >
           {isSettingUpFaucet ? 'Loading...' : 'Setup Faucet'}
@@ -105,6 +166,7 @@ function App() {
             isMintingTokens ||
             isCreatingWallet ||
             isSettingUpFaucet ||
+            isSyncingState ||
             !walletId ||
             !faucetId
           }
@@ -113,6 +175,21 @@ function App() {
           {isMintingTokens ? 'Loading...' : 'Mint Tokens'}
         </button>
         {noteId && <p>Tokens minted with Note ID: {noteId}</p>}
+
+        {/* Sync State */}
+        <button
+          onClick={handleSyncState}
+          disabled={
+            isSyncingState ||
+            isCreatingWallet ||
+            isSettingUpFaucet ||
+            isMintingTokens
+          }
+          className="button"
+        >
+          {isSyncingState ? 'Loading...' : 'Sync State'}
+        </button>
+        {syncResult && <p>State sync complete</p>}
       </div>
 
       {/* Error Display */}

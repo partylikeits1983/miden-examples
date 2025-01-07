@@ -16,6 +16,9 @@ export async function setupFaucet(): Promise<string> {
     );
 
     console.log(`Faucet created with ID: ${faucetId.id().to_string()}`);
+
+    await webClient.sync_state();
+
     return faucetId.id().to_string();
   } catch (error) {
     console.error('Error setting up faucet:', error);

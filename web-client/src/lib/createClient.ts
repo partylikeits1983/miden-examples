@@ -2,6 +2,7 @@
 import { WebClient } from '@demox-labs/miden-sdk';
 
 const localNodeUrl = 'http://localhost:57291';
+// const delegatedProver = "http://localhost:8080";
 
 class ClientSingleton {
   private static instance: WebClient | null = null;
@@ -11,6 +12,7 @@ class ClientSingleton {
     if (this.instance === null) {
       this.instance = new WebClient();
       await this.instance.create_client(localNodeUrl);
+
       console.log('WebClient initialized.');
     }
     return this.instance;
