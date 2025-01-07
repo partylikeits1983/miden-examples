@@ -1,5 +1,5 @@
 import ClientSingleton from './createClient';
-import { AccountId, NoteType, AccountHeader } from '@demox-labs/miden-sdk';
+import { AccountId, NoteType } from '@demox-labs/miden-sdk';
 
 export async function mintTokens(
   walletId: string,
@@ -16,19 +16,6 @@ export async function mintTokens(
 
     await webClient.fetch_and_cache_account_auth_by_pub_key(_faucetId);
     await webClient.sync_state();
-
-    // console.log(_walletId.is_faucet(), _faucetId.is_faucet());
-    /* 
-    const accounts: AccountHeader[] = await webClient.get_accounts();
-
-    console.log('length:', accounts.length);
-
-    if (accounts.length === 0) {
-      console.log('No accounts found.');
-      throw new Error('No accounts found.');
-    } */
-
-    // const lastAccount = accounts[accounts.length - 1].id();
 
     console.log('calling mint');
 

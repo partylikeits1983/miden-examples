@@ -4,6 +4,7 @@ import { setupFaucet } from './lib/createFaucet';
 import { mintTokens } from './lib/mintTokens';
 import { syncState } from './lib/syncState';
 import ClientSingleton from './lib/createClient'; // Import ClientSingleton
+import { clearDatabase } from './lib/clearDB'; // Import clearDatabase
 
 import './App.css';
 
@@ -20,6 +21,7 @@ function App() {
   const [isSettingUpFaucet, setIsSettingUpFaucet] = useState<boolean>(false);
   const [isMintingTokens, setIsMintingTokens] = useState<boolean>(false);
   const [isSyncingState, setIsSyncingState] = useState<boolean>(false);
+  const [isClearingDb, setIsClearingDb] = useState<boolean>(false); // New state for clearing DB
 
   const handleCreateClient = async () => {
     setError(null);
@@ -109,6 +111,21 @@ function App() {
     }
   };
 
+  const handleClearDatabase = async () => {
+    setError(null);
+    setIsClearingDb(true);
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 300));
+      await clearDatabase();
+      console.log('Database cleared');
+    } catch (err: any) {
+      console.error(err);
+      setError(err.message || 'Error clearing database');
+    } finally {
+      setIsClearingDb(false);
+    }
+  };
+
   return (
     <div className="container">
       <h1>Miden SDK Demo</h1>
@@ -121,7 +138,8 @@ function App() {
             isCreatingWallet ||
             isSettingUpFaucet ||
             isMintingTokens ||
-            isSyncingState
+            isSyncingState ||
+            isClearingDb
           }
           className="button"
         >
@@ -136,7 +154,8 @@ function App() {
             isCreatingWallet ||
             isSettingUpFaucet ||
             isMintingTokens ||
-            isSyncingState
+            isSyncingState ||
+            isClearingDb
           }
           className="button"
         >
@@ -151,7 +170,8 @@ function App() {
             isSettingUpFaucet ||
             isCreatingWallet ||
             isMintingTokens ||
-            isSyncingState
+            isSyncingState ||
+            isClearingDb
           }
           className="button"
         >
@@ -167,6 +187,7 @@ function App() {
             isCreatingWallet ||
             isSettingUpFaucet ||
             isSyncingState ||
+            isClearingDb ||
             !walletId ||
             !faucetId
           }
@@ -183,13 +204,30 @@ function App() {
             isSyncingState ||
             isCreatingWallet ||
             isSettingUpFaucet ||
-            isMintingTokens
+            isMintingTokens ||
+            isClearingDb
           }
           className="button"
         >
           {isSyncingState ? 'Loading...' : 'Sync State'}
         </button>
         {syncResult && <p>State sync complete</p>}
+
+        {/* Clear Database */}
+        <button
+          onClick={handleClearDatabase}
+          disabled={
+            isClearingDb ||
+            isCreatingClient ||
+            isCreatingWallet ||
+            isSettingUpFaucet ||
+            isMintingTokens ||
+            isSyncingState
+          }
+          className="button"
+        >
+          {isClearingDb ? 'Clearing...' : 'Clear Database'}
+        </button>
       </div>
 
       {/* Error Display */}

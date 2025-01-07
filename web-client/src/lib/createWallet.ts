@@ -1,7 +1,7 @@
 // src/lib/createWallet.ts
 
 import ClientSingleton from './createClient';
-import { AccountStorageMode, AccountHeader } from '@demox-labs/miden-sdk';
+import { AccountStorageMode } from '@demox-labs/miden-sdk';
 
 export async function createWallet(): Promise<string> {
   try {
@@ -12,14 +12,7 @@ export async function createWallet(): Promise<string> {
       true
     );
 
-    // await webClient.sync_state();
-
-    console.log('account: ', accountId);
-
-    const accounts: AccountHeader[] = await webClient.get_accounts();
-    console.log('length:', accounts.length);
-
-    // await webClient.getAccountAuthByPubKey(accountId);
+    await webClient.sync_state();
 
     return accountId.id().to_string();
   } catch (error) {
