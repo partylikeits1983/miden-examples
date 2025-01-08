@@ -13,7 +13,7 @@ export async function clearDatabase(): Promise<void> {
         console.log(`Deleted database: ${dbName}`);
       }
     }
-    console.log("All databases deleted.");
+    console.log('All databases deleted.');
   } catch (error) {
     console.error('Error clearing databases:', error);
     throw error;

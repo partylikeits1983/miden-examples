@@ -15,6 +15,10 @@ class ClientSingleton {
 
       console.log('WebClient initialized.');
     }
+
+    let accounts = this.instance.get_accounts();
+    console.log('accounts', (await accounts).length);
+
     return this.instance;
   }
 }

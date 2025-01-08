@@ -1,5 +1,12 @@
 import ClientSingleton from './createClient';
-import { AccountId, NoteType } from '@demox-labs/miden-sdk';
+import {
+  AccountId,
+  NoteType,
+  FungibleAsset,
+  TransactionRequest,
+  Note,
+  NoteAssets,
+} from '@demox-labs/miden-sdk';
 
 export async function mintTokens(
   walletId: string,
@@ -25,6 +32,9 @@ export async function mintTokens(
       NoteType.private(),
       BigInt(100)
     );
+
+    // let fungible_asset: FungibleAsset = new FungibleAsset(_faucetId, BigInt(100));
+    // let transaction_request: TransactionRequest = new TransactionRequest()
 
     await webClient.sync_state();
 
