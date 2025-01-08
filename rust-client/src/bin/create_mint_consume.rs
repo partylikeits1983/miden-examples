@@ -1,8 +1,10 @@
+use miden_objects::accounts::get_account_seed;
 use rand::Rng;
 
 use miden_client::{
     accounts::{AccountId, AccountStorageMode, AccountTemplate, AccountType},
     assets::{FungibleAsset, TokenSymbol},
+    crypto::Digest,
     notes::NoteType,
     transactions::{PaymentTransactionData, TransactionRequest},
     ClientError,
@@ -143,9 +145,20 @@ async fn main() -> Result<(), ClientError> {
         };
 
         // Create a new dummy account ID
-        let target_account_id =
-            AccountId::new_dummy(init_seed, AccountType::RegularAccountUpdatableCode);
+        // let target_account_id = AccountId::new_dummy(init_seed, AccountType::RegularAccountUpdatableCode);
+        let code_commitment = Digest::default();
+        let storage_commitment = Digest::default();
+        let seed = get_account_seed(
+            init_seed,
+            AccountType::RegularAccountUpdatableCode,
+            AccountStorageMode::Public,
+            code_commitment,
+            storage_commitment,
+        )
+        .unwrap();
+        let target_account_id = AccountId::new(seed, code_commitment, storage_commitment).unwrap();
 
+        // Specify send amount
         let send_amount = 50;
         let fungible_asset = FungibleAsset::new(faucet_account.id(), send_amount)
             .expect("Failed to create fungible asset for sending.");

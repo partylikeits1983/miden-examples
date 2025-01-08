@@ -104,8 +104,10 @@ pub fn create_new_account(
         .storage_mode(AccountStorageMode::Public)
         .with_component(account_component)
         .with_component(RpoFalcon512::new(PublicKey::new(pub_key)))
-        .build_testing()
+        .build()
         .unwrap();
+    // .build_testing()
+    // .unwrap();
 
-    (account, seed, auth_secret_key)
+    (account, Some(seed), auth_secret_key)
 }
