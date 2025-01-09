@@ -8,8 +8,8 @@ export async function createWallet(): Promise<string> {
     const webClient = await ClientSingleton.getInstance();
 
     const accountId = await webClient.new_wallet(
-      AccountStorageMode.private(),
-      true
+      AccountStorageMode.public(), // storage type
+      true // updatable
     );
 
     await webClient.sync_state();

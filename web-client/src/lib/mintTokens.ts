@@ -1,16 +1,10 @@
 import ClientSingleton from './createClient';
-import {
-  AccountId,
-  NoteType,
-  FungibleAsset,
-  TransactionRequest,
-  Note,
-  NoteAssets,
-} from '@demox-labs/miden-sdk';
+import { AccountId, NoteType } from '@demox-labs/miden-sdk';
 
 export async function mintTokens(
   walletId: string,
-  faucetId: string
+  faucetId: string,
+  amount: bigint
 ): Promise<string> {
   try {
     const webClient = await ClientSingleton.getInstance();
@@ -27,19 +21,18 @@ export async function mintTokens(
     console.log('calling mint');
 
     const newTxnResult = await webClient.new_mint_transaction(
-      _walletId,
-      _faucetId,
-      NoteType.private(),
-      BigInt(100)
+      _walletId, // target wallet id
+      _faucetId, // faucet id
+      NoteType.public(), // Note Type
+      amount // use the passed amount
     );
 
-    console.log('result: ', newTxnResult.created_notes().notes());
-
+    await new Promise((r) => setTimeout(r, 20000));
     await webClient.sync_state();
 
     return newTxnResult.created_notes().notes().toString();
   } catch (error) {
-    console.error('Error setting up faucet:', error);
+    console.error('Error minting tokens:', error);
     throw error;
   }
 }

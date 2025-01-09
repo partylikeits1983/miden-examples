@@ -8,11 +8,11 @@ export async function setupFaucet(): Promise<string> {
     const webClient = await ClientSingleton.getInstance();
 
     const faucetId = await webClient.new_faucet(
-      AccountStorageMode.private(),
+      AccountStorageMode.public(),
       false,
       'DAG', // Token name
       8, // Decimals
-      BigInt(10000000) // Initial balance
+      BigInt(1_000_000) // max supply
     );
 
     console.log(`Faucet created with ID: ${faucetId.id().to_string()}`);

@@ -1,11 +1,11 @@
 // src/lib/consumeNotes.ts
 
 import ClientSingleton from './createClient';
-import { AccountId, NoteType } from '@demox-labs/miden-sdk';
+import { AccountId } from '@demox-labs/miden-sdk';
 
 export async function consumeNotes(
   targetAccountId: string,
-  faucetId: string,
+  _faucetId: string,
   noteId: string
 ): Promise<string> {
   try {

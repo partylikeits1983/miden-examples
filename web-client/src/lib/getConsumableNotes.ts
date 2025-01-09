@@ -15,16 +15,12 @@ export async function getConsumableNotes(
 ): Promise<ConsumableNoteRecord[]> {
   const webClient = await ClientSingleton.getInstance();
 
-  console.log('accountID', accountId);
-
   await webClient.sync_state();
 
   let records;
   if (accountId) {
     const _accountId = AccountId.from_hex(accountId);
     records = await webClient.get_consumable_notes(_accountId);
-
-    console.log('records', records);
   } else {
     records = await webClient.get_consumable_notes();
   }
