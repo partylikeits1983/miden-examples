@@ -33,8 +33,7 @@ export async function mintTokens(
       BigInt(100)
     );
 
-    // let fungible_asset: FungibleAsset = new FungibleAsset(_faucetId, BigInt(100));
-    // let transaction_request: TransactionRequest = new TransactionRequest()
+    console.log('result: ', newTxnResult.created_notes().notes());
 
     await webClient.sync_state();
 

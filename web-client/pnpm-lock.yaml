@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@demox-labs/miden-sdk':
-        specifier: ^0.0.18
-        version: 0.0.18(chai@5.1.2)
+        specifier: ^0.0.20
+        version: 0.0.20(chai@5.1.2)
       react:
         specifier: ^18.3.1
         version: 18.3.1
@@ -155,8 +155,8 @@ packages:
     resolution: {integrity: sha512-vN5p+1kl59GVKMvTHt55NzzmYVxprfJD+ql7U9NFIfKCBkYE55LYtS+WtPlaYOyzydrKI8Nezd+aZextrd+FMA==}
     engines: {node: '>=6.9.0'}
 
-  '@demox-labs/miden-sdk@0.0.18':
-    resolution: {integrity: sha512-gbD5YeJTdBwMd9xdGX+euj6QiN8RttMG+RP3fgTLQXt/4tS9AYXMaR4IP/cxKfhctvIlBlfiJSHNqFcDTbJWxQ==}
+  '@demox-labs/miden-sdk@0.0.20':
+    resolution: {integrity: sha512-SboTfz/ImrbuFpqjaLEs67ARCB9Brgrj+YG+LOAvCgKteUyIxRbpadOfah/dLi18durp5YOj89L7VWIvE3MrSg==}
 
   '@esbuild/aix-ppc64@0.24.2':
     resolution: {integrity: sha512-thpVCb/rhxE/BnMLQ7GReQLLN8q9qbHmI55F4489/ByVg2aQaQ6kbcLb6FHkocZzQhxc4gx0sCk0tJkKBFzDhA==}
@@ -1432,7 +1432,7 @@ snapshots:
       '@babel/helper-string-parser': 7.25.9
       '@babel/helper-validator-identifier': 7.25.9
 
-  '@demox-labs/miden-sdk@0.0.18(chai@5.1.2)':
+  '@demox-labs/miden-sdk@0.0.20(chai@5.1.2)':
     dependencies:
       chai-as-promised: 8.0.1(chai@5.1.2)
       dexie: 4.0.10

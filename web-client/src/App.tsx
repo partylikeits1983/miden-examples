@@ -3,8 +3,10 @@ import { createWallet } from './lib/createWallet';
 import { setupFaucet } from './lib/createFaucet';
 import { mintTokens } from './lib/mintTokens';
 import { syncState } from './lib/syncState';
-import ClientSingleton from './lib/createClient'; // Import ClientSingleton
-import { clearDatabase } from './lib/clearDB'; // Import clearDatabase
+import ClientSingleton from './lib/createClient';
+import { clearDatabase } from './lib/clearDB';
+import { consumeNotes } from './lib/consumeNotes';
+import { getConsumableNotes } from './lib/getConsumableNotes';
 
 import './App.css';
 
@@ -13,21 +15,30 @@ function App() {
   const [faucetId, setFaucetId] = useState<string | null>(null);
   const [noteId, setNoteId] = useState<string | null>(null);
   const [syncResult, setSyncResult] = useState<boolean | null>(null);
-
   const [error, setError] = useState<string | null>(null);
+
+  // Loading/processing states
   const [isCreatingClient, setIsCreatingClient] = useState<boolean>(false);
   const [clientInitialized, setClientInitialized] = useState<boolean>(false);
   const [isCreatingWallet, setIsCreatingWallet] = useState<boolean>(false);
   const [isSettingUpFaucet, setIsSettingUpFaucet] = useState<boolean>(false);
   const [isMintingTokens, setIsMintingTokens] = useState<boolean>(false);
   const [isSyncingState, setIsSyncingState] = useState<boolean>(false);
-  const [isClearingDb, setIsClearingDb] = useState<boolean>(false); // New state for clearing DB
+  const [isClearingDb, setIsClearingDb] = useState<boolean>(false);
+
+  // States for note operations
+  const [isConsumingNotes, setIsConsumingNotes] = useState<boolean>(false);
+  const [consumedNoteTxId, setConsumedNoteTxId] = useState<string | null>(null);
+  const [isGettingNotes, setIsGettingNotes] = useState<boolean>(false);
+
+  /* ------------------------------
+   * Handlers
+   * ------------------------------ */
 
   const handleCreateClient = async () => {
     setError(null);
     setIsCreatingClient(true);
     try {
-      // Add a small delay to ensure UI updates
       await new Promise((resolve) => setTimeout(resolve, 300));
       await ClientSingleton.getInstance();
       setClientInitialized(true);
@@ -94,6 +105,58 @@ function App() {
     }
   };
 
+  const handleGetNotes = async () => {
+    setError(null);
+    setIsGettingNotes(true);
+    try {
+      if (!walletId) {
+        throw new Error('No wallet to fetch notes from');
+      }
+      const notes = await getConsumableNotes(walletId);
+      if (notes.length === 0) {
+        setNoteId(null);
+        setError('No notes found for this wallet');
+      } else {
+        setNoteId(notes[0].noteId);
+        console.log('Consumable Notes:', notes);
+      }
+    } catch (err: any) {
+      console.error(err);
+      setError(err.message || 'Error fetching consumable notes');
+    } finally {
+      setIsGettingNotes(false);
+    }
+  };
+
+  const handleConsumeNotes = async () => {
+    setError(null);
+    setConsumedNoteTxId(null);
+
+    if (!noteId) {
+      setError('No notes to consume');
+      return;
+    }
+
+    if (!walletId || !faucetId) {
+      setError('Wallet ID and Faucet ID are required to consume notes');
+      return;
+    }
+
+    setIsConsumingNotes(true);
+    try {
+      const txId = await consumeNotes(walletId, faucetId, noteId);
+      setConsumedNoteTxId(txId);
+      console.log('Consumed Note TX ID:', txId);
+
+      setNoteId(null);
+    } catch (err: any) {
+      console.error(err);
+      setError(err.message || 'Error consuming notes');
+    } finally {
+      setIsConsumingNotes(false);
+    }
+  };
+
   const handleSyncState = async () => {
     setError(null);
     setSyncResult(null);
@@ -126,6 +189,9 @@ function App() {
     }
   };
 
+  /* ------------------------------
+   * Rendering
+   * ------------------------------ */
   return (
     <div className="container">
       <h1>Miden SDK Demo</h1>
@@ -147,7 +213,7 @@ function App() {
         </button>
         {clientInitialized && <p>Client has been initialized.</p>}
 
-        {/* Wallet Creation */}
+        {/* Create Wallet */}
         <button
           onClick={handleCreateWallet}
           disabled={
@@ -163,7 +229,7 @@ function App() {
         </button>
         {walletId && <p>Wallet created with ID: {walletId}</p>}
 
-        {/* Faucet Setup */}
+        {/* Setup Faucet */}
         <button
           onClick={handleSetupFaucet}
           disabled={
@@ -196,6 +262,37 @@ function App() {
           {isMintingTokens ? 'Loading...' : 'Mint Tokens'}
         </button>
         {noteId && <p>Tokens minted with Note ID: {noteId}</p>}
+
+        {/* Get Notes */}
+        <button
+          onClick={handleGetNotes}
+          disabled={isGettingNotes || !walletId}
+          className="button"
+        >
+          {isGettingNotes ? 'Loading...' : 'Get Notes'}
+        </button>
+
+        {/* Consume Notes */}
+        <button
+          onClick={handleConsumeNotes}
+          disabled={
+            isConsumingNotes ||
+            isCreatingWallet ||
+            isSettingUpFaucet ||
+            isMintingTokens ||
+            isSyncingState ||
+            isClearingDb ||
+            !noteId // <-- Disable if no note is present
+          }
+          className="button"
+        >
+          {isConsumingNotes ? 'Consuming...' : 'Consume Notes'}
+        </button>
+
+        {!noteId && <p>No notes to consume</p>}
+        {consumedNoteTxId && (
+          <p>Successfully consumed note. Transaction ID: {consumedNoteTxId}</p>
+        )}
 
         {/* Sync State */}
         <button
