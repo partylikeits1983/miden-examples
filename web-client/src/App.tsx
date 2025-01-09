@@ -33,34 +33,39 @@ function App() {
           disableButtons={disableButtons}
         />
 
-        <WalletSection
-          isCreatingWallet={demo.isCreatingWallet}
-          walletId={demo.walletId}
-          disableButtons={disableButtons}
-          handleCreateWallet={demo.handleCreateWallet}
-        />
+        {/* Group Faucet and Mint Tokens sections side by side */}
+        <div className="faucet-mint-group">
+          <FaucetSection
+            isSettingUpFaucet={demo.isSettingUpFaucet}
+            faucetId={demo.faucetId}
+            disableButtons={disableButtons}
+            handleSetupFaucet={demo.handleSetupFaucet}
+          />
+          <MintTokensSection
+            isMintingTokens={demo.isMintingTokens}
+            noteId={demo.noteId}
+            disableButtons={disableButtons}
+            handleMintTokens={demo.handleMintTokens}
+          />
+        </div>
 
-        <FaucetSection
-          isSettingUpFaucet={demo.isSettingUpFaucet}
-          faucetId={demo.faucetId}
-          disableButtons={disableButtons}
-          handleSetupFaucet={demo.handleSetupFaucet}
-        />
+        {/* Group Wallet creation, account selector, and wallets table */}
+        <div className="wallet-group">
+          <WalletSection
+            isCreatingWallet={demo.isCreatingWallet}
+            walletId={demo.walletId}
+            disableButtons={disableButtons}
+            handleCreateWallet={demo.handleCreateWallet}
+          />
 
-        <MintTokensSection
-          isMintingTokens={demo.isMintingTokens}
-          noteId={demo.noteId}
-          disableButtons={disableButtons}
-          handleMintTokens={demo.handleMintTokens}
-        />
+          <AccountSelector
+            wallets={demo.wallets}
+            selectedWalletId={demo.walletId}
+            onSelectWallet={demo.handleSelectWallet}
+          />
 
-        <AccountSelector
-          wallets={demo.wallets}
-          selectedWalletId={demo.walletId}
-          onSelectWallet={demo.handleSelectWallet}
-        />
-
-        <WalletsTableSection wallets={demo.wallets} />
+          <WalletsTableSection wallets={demo.wallets} />
+        </div>
 
         <SendTokensSection onSendTokens={demo.handleSendTokens} />
 
@@ -76,18 +81,21 @@ function App() {
           handleConsumeNotes={demo.handleConsumeNotes}
         />
 
-        <SyncSection
-          isSyncingState={demo.isSyncingState}
-          syncResult={demo.syncResult}
-          disableButtons={disableButtons}
-          handleSyncState={demo.handleSyncState}
-        />
+        {/* Group Sync and Clear Database side by side */}
+        <div className="sync-db-group">
+          <SyncSection
+            isSyncingState={demo.isSyncingState}
+            syncResult={demo.syncResult}
+            disableButtons={disableButtons}
+            handleSyncState={demo.handleSyncState}
+          />
 
-        <DatabaseSection
-          isClearingDb={demo.isClearingDb}
-          disableButtons={disableButtons}
-          handleClearDatabase={demo.handleClearDatabase}
-        />
+          <DatabaseSection
+            isClearingDb={demo.isClearingDb}
+            disableButtons={disableButtons}
+            handleClearDatabase={demo.handleClearDatabase}
+          />
+        </div>
       </div>
 
       {/* Error Display */}

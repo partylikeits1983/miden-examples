@@ -12,7 +12,7 @@ export function FaucetSection({
   handleSetupFaucet,
 }: FaucetSectionProps) {
   return (
-    <div style={{ marginBottom: '1rem' }}>
+    <div>
       <button
         onClick={handleSetupFaucet}
         disabled={disableButtons || isSettingUpFaucet}

@@ -17,7 +17,7 @@ export function AccountSelector({
   };
 
   return (
-    <div style={{ marginBottom: '1rem' }}>
+    <div>
       <h2>Switch Account</h2>
       <label htmlFor="walletSelector">Select Active Wallet: </label>
       <select

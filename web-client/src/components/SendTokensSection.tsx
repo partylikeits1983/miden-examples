@@ -29,6 +29,7 @@ export function SendTokensSection({ onSendTokens }: SendTokensSectionProps) {
         value={targetAccountId}
         onChange={(e) => setTargetAccountId(e.target.value)}
         style={{ display: 'block', marginBottom: '0.5rem', padding: '0.5rem' }}
+        className="uniform-input"
       />
       <input
         type="number"
@@ -36,10 +37,12 @@ export function SendTokensSection({ onSendTokens }: SendTokensSectionProps) {
         value={amount}
         onChange={(e) => setAmount(e.target.value)}
         style={{ display: 'block', marginBottom: '0.5rem', padding: '0.5rem' }}
+        className="uniform-input"
       />
       <button
         onClick={handleSubmit}
         style={{ display: 'block', marginBottom: '0.5rem', padding: '0.5rem' }}
+        className="button"
       >
         Send Tokens
       </button>

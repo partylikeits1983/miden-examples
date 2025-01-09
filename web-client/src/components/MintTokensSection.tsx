@@ -31,6 +31,7 @@ export function MintTokensSection({
         value={walletIdInput}
         onChange={(e) => setWalletIdInput(e.target.value)}
         style={{ display: 'block', marginBottom: '0.5rem', padding: '0.5rem' }}
+        className="uniform-input"
       />
       <input
         type="number"
@@ -38,6 +39,7 @@ export function MintTokensSection({
         value={amountInput}
         onChange={(e) => setAmountInput(e.target.value)}
         style={{ display: 'block', marginBottom: '0.5rem', padding: '0.5rem' }}
+        className="uniform-input"
       />
       <button
         onClick={onMint}

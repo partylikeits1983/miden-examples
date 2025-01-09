@@ -85,3 +85,40 @@
   color: #666666;
   cursor: not-allowed;
 }
+
+.uniform-input {
+  display: block;
+  margin-bottom: 0.5rem;
+  padding: 0.5rem;
+  width: 180px;
+}
+
+
+/* App.css */
+
+.wallets-table {
+  width: 100%;
+  border-collapse: collapse; /* So the cell borders collapse into a single line */
+  margin-top: 1rem;
+}
+
+.wallets-table th,
+.wallets-table td {
+  border: 1px solid #ccc; /* Light gray lines between cells */
+  padding: 8px 12px;      /* Spacing inside cells */
+  text-align: left;       /* Left-align text */
+}
+
+.wallets-table th {
+  background-color: #2e2071; /* Slightly different background for headers */
+  font-weight: bold;
+}
+
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 2rem;
+}
+

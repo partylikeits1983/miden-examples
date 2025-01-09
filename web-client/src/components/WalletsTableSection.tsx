@@ -1,3 +1,6 @@
+// src/components/WalletsTableSection.tsx
+
+import React from 'react';
 import { WalletDetails } from '../lib/getWalletDetails';
 
 interface WalletsTableProps {
@@ -5,14 +8,10 @@ interface WalletsTableProps {
 }
 
 export function WalletsTableSection({ wallets }: WalletsTableProps) {
-  if (wallets.length === 0) {
-    return <p>No wallets created yet.</p>;
-  }
-
   return (
     <div style={{ marginTop: '2rem' }}>
       <h2>All Wallets</h2>
-      <table>
+      <table className="wallets-table">
         <thead>
           <tr>
             <th>Account ID</th>
@@ -21,13 +20,21 @@ export function WalletsTableSection({ wallets }: WalletsTableProps) {
           </tr>
         </thead>
         <tbody>
-          {wallets.map((wallet) => (
-            <tr key={wallet.accountId}>
-              <td>{wallet.accountId}</td>
-              <td>{wallet.nonce}</td>
-              <td>{wallet.balance}</td>
+          {wallets.length > 0 ? (
+            wallets.map((wallet) => (
+              <tr key={wallet.accountId}>
+                <td>{wallet.accountId}</td>
+                <td>{wallet.nonce}</td>
+                <td>{wallet.balance}</td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan={3} style={{ textAlign: 'center' }}>
+                No wallets created yet.
+              </td>
             </tr>
-          ))}
+          )}
         </tbody>
       </table>
     </div>
