@@ -1,19 +1,17 @@
 import './App.css';
 
 import { useMidenDemo } from './hooks/useMidenDemo';
+
 import { ClientSection } from './components/ClientSection';
 import { WalletSection } from './components/WalletSection';
 import { AccountSelector } from './components/AccountSelector';
 import { FaucetSection } from './components/FaucetSection';
 import { MintTokensSection } from './components/MintTokensSection';
 import { SendTokensSection } from './components/SendTokensSection';
-
+import { WalletsTableSection } from './components/WalletsTableSection';
 import { NotesSection } from './components/NotesSection';
 import { SyncSection } from './components/SyncSection';
 import { DatabaseSection } from './components/DatabaseSection';
-
-// Import our new WalletsTableSection
-import { WalletsTableSection } from './components/WalletsTableSection';
 
 function App() {
   const demo = useMidenDemo();
@@ -35,6 +33,13 @@ function App() {
           disableButtons={disableButtons}
         />
 
+        <WalletSection
+          isCreatingWallet={demo.isCreatingWallet}
+          walletId={demo.walletId}
+          disableButtons={disableButtons}
+          handleCreateWallet={demo.handleCreateWallet}
+        />
+
         <FaucetSection
           isSettingUpFaucet={demo.isSettingUpFaucet}
           faucetId={demo.faucetId}
@@ -47,13 +52,6 @@ function App() {
           noteId={demo.noteId}
           disableButtons={disableButtons}
           handleMintTokens={demo.handleMintTokens}
-        />
-
-        <WalletSection
-          isCreatingWallet={demo.isCreatingWallet}
-          walletId={demo.walletId}
-          disableButtons={disableButtons}
-          handleCreateWallet={demo.handleCreateWallet}
         />
 
         <AccountSelector

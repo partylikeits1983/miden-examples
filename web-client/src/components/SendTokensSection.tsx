@@ -1,4 +1,3 @@
-// src/components/SendTokensSection.tsx
 import { useState } from 'react';
 
 interface SendTokensSectionProps {
@@ -23,20 +22,27 @@ export function SendTokensSection({ onSendTokens }: SendTokensSectionProps) {
   };
 
   return (
-    <div>
+    <div style={{ marginBottom: '1rem' }}>
       <input
         type="text"
         placeholder="Target Account ID"
         value={targetAccountId}
         onChange={(e) => setTargetAccountId(e.target.value)}
+        style={{ display: 'block', marginBottom: '0.5rem', padding: '0.5rem' }}
       />
       <input
         type="number"
         placeholder="Amount"
         value={amount}
         onChange={(e) => setAmount(e.target.value)}
+        style={{ display: 'block', marginBottom: '0.5rem', padding: '0.5rem' }}
       />
-      <button onClick={handleSubmit}>Send Tokens</button>
+      <button
+        onClick={handleSubmit}
+        style={{ display: 'block', marginBottom: '0.5rem', padding: '0.5rem' }}
+      >
+        Send Tokens
+      </button>
     </div>
   );
 }

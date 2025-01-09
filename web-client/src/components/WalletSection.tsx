@@ -18,7 +18,7 @@ export function WalletSection({
         disabled={disableButtons || isCreatingWallet}
         className="button"
       >
-        {isCreatingWallet ? 'Loading...' : 'Create Wallet'}
+        {isCreatingWallet ? 'Loading...' : 'Create New Wallet'}
       </button>
       {walletId && <p>Wallet created with ID: {walletId}</p>}
     </div>

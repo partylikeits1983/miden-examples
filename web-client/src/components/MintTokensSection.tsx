@@ -1,4 +1,3 @@
-// src/components/MintTokensSection.tsx
 import { useState } from 'react';
 
 interface MintTokensSectionProps {
@@ -25,18 +24,20 @@ export function MintTokensSection({
 
   return (
     <div style={{ marginBottom: '1rem' }}>
-      <h2>Mint Tokens</h2>
+      <h2 style={{ marginBottom: '0.5rem' }}>Mint Tokens</h2>
       <input
         type="text"
         placeholder="Target Wallet ID"
         value={walletIdInput}
         onChange={(e) => setWalletIdInput(e.target.value)}
+        style={{ display: 'block', marginBottom: '0.5rem', padding: '0.5rem' }}
       />
       <input
         type="number"
         placeholder="Amount"
         value={amountInput}
         onChange={(e) => setAmountInput(e.target.value)}
+        style={{ display: 'block', marginBottom: '0.5rem', padding: '0.5rem' }}
       />
       <button
         onClick={onMint}
@@ -44,10 +45,15 @@ export function MintTokensSection({
           disableButtons || isMintingTokens || !walletIdInput || !amountInput
         }
         className="button"
+        style={{ display: 'block', marginBottom: '0.5rem', padding: '0.5rem' }}
       >
         {isMintingTokens ? 'Loading...' : 'Mint Tokens'}
       </button>
-      {noteId && <p>Tokens minted with Note ID: {noteId}</p>}
+      {noteId && (
+        <p style={{ marginTop: '0.5rem' }}>
+          Tokens minted with Note ID: {noteId}
+        </p>
+      )}
     </div>
   );
 }
