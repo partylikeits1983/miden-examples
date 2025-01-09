@@ -13,8 +13,7 @@ miden-node make-genesis \
   --output-path node/storage/genesis.dat
 
 cd node/storage
-miden-node --features "testing" \
-start\
+miden-node start \
 --config node/config/miden-node.toml \
 node
 ```
