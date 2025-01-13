@@ -6,8 +6,8 @@ use miden_client::{
     transactions::{OutputNote, PaymentTransactionData, TransactionRequest},
     ClientError, Felt,
 };
-use miden_lib::notes::{create_p2id_note, create_p2idr_note, create_swap_note};
 use miden_objects::accounts::get_account_seed;
+use miden_lib::notes::create_p2id_note;
 use rand::Rng;
 
 use rust_client::common::initialize_client;
@@ -130,7 +130,6 @@ async fn main() -> Result<(), ClientError> {
     println!("\n[STEP 5] Alice sends 5 notes of 50 tokens each to 5 different users.");
 
     let mut p2id_notes = vec![];
-
     for i in 1..=4 {
         // Generate a unique random seed based on the loop index `i`
         let init_seed = {
@@ -159,12 +158,6 @@ async fn main() -> Result<(), ClientError> {
         let fungible_asset = FungibleAsset::new(faucet_account.id(), send_amount)
             .expect("Failed to create fungible asset for sending.");
 
-        let payment_transaction = PaymentTransactionData::new(
-            vec![fungible_asset.into()],
-            alice_account.id(),
-            target_account_id,
-        );
-
         let p2id_note = create_p2id_note(
             alice_account.id(),
             target_account_id,
@@ -175,7 +168,6 @@ async fn main() -> Result<(), ClientError> {
         )
         .unwrap();
 
-        // push the p2id note to a vector
         p2id_notes.push(p2id_note);
     }
     let output_notes: Vec<OutputNote> = p2id_notes.into_iter().map(OutputNote::Full).collect();
@@ -184,16 +176,44 @@ async fn main() -> Result<(), ClientError> {
         .with_own_output_notes(output_notes)
         .unwrap();
 
-    /*        //
-          // Create a pay-to-id transaction
-          let transaction_request = TransactionRequest::pay_to_id(
-              payment_transaction,
-              None,             // recall_height: None
-              NoteType::Public, // note type is public
-              client.rng(),     // rng
-          )
-          .expect("Failed to create payment transaction request.");
-    */
+    let tx_execution_result = client
+        .new_transaction(alice_account.id(), transaction_request)
+        .await?;
+
+    client.submit_transaction(tx_execution_result).await?;
+
+    // Example of sending a single P2ID transaction
+
+    // Generate a unique random seed
+    let init_seed = {
+        let mut seed = [0u8; 32];
+        rand::thread_rng().fill(&mut seed);
+        seed[0] = 0 as u8;
+        seed
+    };
+
+    // Create a new dummy account ID
+    let target_account_id =
+        AccountId::new_dummy(init_seed, AccountType::RegularAccountUpdatableCode);
+
+    let send_amount = 50;
+    let fungible_asset = FungibleAsset::new(faucet_account.id(), send_amount).unwrap();
+
+    let payment_transaction = PaymentTransactionData::new(
+        vec![fungible_asset.into()],
+        alice_account.id(),
+        target_account_id,
+    );
+
+    // Create a pay-to-id transaction
+    let transaction_request = TransactionRequest::pay_to_id(
+        payment_transaction,
+        None,             // recall_height: None
+        NoteType::Public, // note type is public
+        client.rng(),     // rng
+    )
+    .unwrap();
+
     let tx_execution_result = client
         .new_transaction(alice_account.id(), transaction_request)
         .await?;
