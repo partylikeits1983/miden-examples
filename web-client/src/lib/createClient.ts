@@ -1,7 +1,7 @@
 // src/lib/createClient.ts
 import { WebClient } from '@demox-labs/miden-sdk';
 
-const localNodeUrl = 'http://localhost:57291';
+const nodeEndpoint = 'http://localhost:57291';
 // const delegatedProver = "http://localhost:8080";
 
 class ClientSingleton {
@@ -11,7 +11,7 @@ class ClientSingleton {
   public static async getInstance(): Promise<WebClient> {
     if (this.instance === null) {
       this.instance = new WebClient();
-      await this.instance.create_client(localNodeUrl);
+      await this.instance.create_client(nodeEndpoint);
 
       console.log('WebClient initialized.');
     }

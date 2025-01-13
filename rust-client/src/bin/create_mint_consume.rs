@@ -40,15 +40,10 @@ async fn main() -> Result<(), ClientError> {
     //------------------------------------------------------------
     println!("\n[STEP 2] Deploying a new fungible faucet.");
 
-    // Token configuration
-    let token_symbol_str = "POL";
-    let decimals = 8;
-    let max_supply = 1_000_000;
-
     let faucet_template = AccountTemplate::FungibleFaucet {
-        token_symbol: TokenSymbol::new(token_symbol_str).expect("Token symbol is invalid"),
-        decimals,
-        max_supply,
+        token_symbol: TokenSymbol::new("POL").unwrap(),
+        decimals: 8,
+        max_supply: 1_000_000,
         storage_mode: AccountStorageMode::Public,
     };
 
@@ -68,9 +63,8 @@ async fn main() -> Result<(), ClientError> {
     tokio::time::sleep(Duration::from_secs(5)).await;
 
     for i in 1..=5 {
-        let amount = 100;
-        let fungible_asset = FungibleAsset::new(faucet_account.id(), amount)
-            .expect("Failed to create fungible asset struct.");
+        let amount: i32 = 100;
+        let fungible_asset = FungibleAsset::new(faucet_account.id(), 100).unwrap();
 
         let transaction_request = TransactionRequest::mint_fungible_asset(
             fungible_asset.clone(),
@@ -78,7 +72,7 @@ async fn main() -> Result<(), ClientError> {
             NoteType::Public,
             client.rng(),
         )
-        .expect("Failed to create mint transaction request.");
+        .unwrap();
 
         let tx_execution_result = client
             .new_transaction(faucet_account.id(), transaction_request)

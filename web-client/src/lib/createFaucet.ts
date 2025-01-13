@@ -10,7 +10,7 @@ export async function setupFaucet(): Promise<string> {
     const faucetId = await webClient.new_faucet(
       AccountStorageMode.public(),
       false,
-      'DAG', // Token name
+      'MID', // Token symbol
       8, // Decimals
       BigInt(1_000_000) // max supply
     );

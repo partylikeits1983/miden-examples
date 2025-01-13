@@ -6,7 +6,8 @@ timeout_ms = 10000
 
 [rpc.endpoint]
 protocol = "http"
-host = "localhost"
+host = "18.203.155.106" # testnet
+# host = "localhost" # localhost
 port = 57291
 
 [store]
