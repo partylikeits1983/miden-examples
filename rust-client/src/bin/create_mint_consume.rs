@@ -1,14 +1,14 @@
-use miden_objects::accounts::get_account_seed;
-use rand::Rng;
-
 use miden_client::{
     accounts::{AccountId, AccountStorageMode, AccountTemplate, AccountType},
     assets::{FungibleAsset, TokenSymbol},
     crypto::Digest,
     notes::NoteType,
-    transactions::{PaymentTransactionData, TransactionRequest},
-    ClientError,
+    transactions::{OutputNote, PaymentTransactionData, TransactionRequest},
+    ClientError, Felt,
 };
+use miden_lib::notes::{create_p2id_note, create_p2idr_note, create_swap_note};
+use miden_objects::accounts::get_account_seed;
+use rand::Rng;
 
 use rust_client::common::initialize_client;
 
@@ -129,7 +129,9 @@ async fn main() -> Result<(), ClientError> {
     //------------------------------------------------------------
     println!("\n[STEP 5] Alice sends 5 notes of 50 tokens each to 5 different users.");
 
-    for i in 1..=5 {
+    let mut p2id_notes = vec![];
+
+    for i in 1..=4 {
         // Generate a unique random seed based on the loop index `i`
         let init_seed = {
             let mut seed = [0u8; 32];
@@ -163,25 +165,40 @@ async fn main() -> Result<(), ClientError> {
             target_account_id,
         );
 
-        // Create a pay-to-id transaction
-        let transaction_request = TransactionRequest::pay_to_id(
-            payment_transaction,
-            None,             // recall_height: None
-            NoteType::Public, // note type is public
-            client.rng(),     // rng
+        let p2id_note = create_p2id_note(
+            alice_account.id(),
+            target_account_id,
+            vec![fungible_asset.into()],
+            NoteType::Public,
+            Felt::new(0),
+            client.rng(),
         )
-        .expect("Failed to create payment transaction request.");
+        .unwrap();
 
-        let tx_execution_result = client
-            .new_transaction(alice_account.id(), transaction_request)
-            .await?;
-
-        client.submit_transaction(tx_execution_result).await?;
-        println!(
-            "Sent note #{} of {} tokens to AccountId {}.",
-            i, send_amount, target_account_id
-        );
+        // push the p2id note to a vector
+        p2id_notes.push(p2id_note);
     }
+    let output_notes: Vec<OutputNote> = p2id_notes.into_iter().map(OutputNote::Full).collect();
+
+    let transaction_request = TransactionRequest::new()
+        .with_own_output_notes(output_notes)
+        .unwrap();
+
+    /*        //
+          // Create a pay-to-id transaction
+          let transaction_request = TransactionRequest::pay_to_id(
+              payment_transaction,
+              None,             // recall_height: None
+              NoteType::Public, // note type is public
+              client.rng(),     // rng
+          )
+          .expect("Failed to create payment transaction request.");
+    */
+    let tx_execution_result = client
+        .new_transaction(alice_account.id(), transaction_request)
+        .await?;
+
+    client.submit_transaction(tx_execution_result).await?;
 
     println!("\nAll steps completed successfully!");
     println!("Alice created a wallet, a faucet was deployed,");
