@@ -4,6 +4,7 @@ import { createWallet } from '../lib/createWallet';
 import { setupFaucet } from '../lib/createFaucet';
 import { mintTokens } from '../lib/mintTokens';
 import { sendTokens } from '../lib/sendTokens';
+// import { disperseTokens } from '../lib/disperseTokens';
 import { syncState } from '../lib/syncState';
 import { clearDatabase } from '../lib/clearDB';
 import { consumeNotes } from '../lib/consumeNotes';
@@ -143,6 +144,14 @@ export function useMidenDemo() {
         targetAccountId,
         amount
       );
+      /*
+      const sendResult = await disperseTokens(
+        walletId,
+        faucetId,
+        targetAccountId,
+        amount
+      ); 
+      */
       console.log('Send transaction result:', sendResult);
     } catch (err: any) {
       console.error(err);
