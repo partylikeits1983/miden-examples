@@ -131,11 +131,11 @@ let (faucet_account, _faucet_seed) = client.new_account(faucet_template).await?;
 
 ```rust
 const faucetId = await webClient.new_faucet(
-AccountStorageMode.public(),
-false,
-'MID',            // Token symbol
-8,                // Decimals
-BigInt(1_000_000) // max supply
+AccountStorageMode.public(), // storage mode
+false,                       // is non fungible (only fungible currently supported)
+'MID',                       // Token symbol
+8,                           // Decimals
+BigInt(1_000_000)            // max supply
 );
 ```
 
