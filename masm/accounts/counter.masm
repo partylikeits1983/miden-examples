@@ -1,0 +1,32 @@
+use.miden::contracts::wallets::basic
+use.miden::account
+use.miden::tx
+
+export.test_proc
+
+    push.111
+    debug.stack
+    drop
+
+    # push.0
+    # exec.account::get_item
+
+    push.222
+    debug.stack
+    drop
+
+    # debug.stack
+
+    #push.1001
+
+    # [index, value]
+    # exec.account::set_item
+    drop 
+
+end
+
+export.test_1
+    debug.stack
+    push.333
+    drop drop
+end

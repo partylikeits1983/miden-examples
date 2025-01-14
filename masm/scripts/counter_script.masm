@@ -1,0 +1,12 @@
+begin
+    # push.111
+    # debug.stack
+
+    push.111
+    debug.stack
+    drop
+
+    call.0xda4c9c3b4bbf6d9f55be33111436e79767a338ee8ae3d79d99331166533a8813
+
+    drop
+end
