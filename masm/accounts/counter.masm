@@ -1,32 +1,37 @@
 use.miden::contracts::wallets::basic
 use.miden::account
 use.miden::tx
+use.std::sys
 
-export.test_proc
+export.increment_count
 
-    push.111
-    debug.stack
-    drop
+    # => []
+    push.0
 
-    # push.0
-    # exec.account::get_item
+    # => [index]
+    exec.account::get_item
 
-    push.222
-    debug.stack
-    drop
+    # => [count]
+    push.1 add
 
-    # debug.stack
+    # => [count+1]
+    push.0
 
-    #push.1001
+    # [index, count+1]
+    exec.account::set_item
 
-    # [index, value]
-    # exec.account::set_item
-    drop 
+    # => []
+    exec.account::get_nonce
 
-end
+    # [nonce]
+    push.1 add
 
-export.test_1
-    debug.stack
-    push.333
-    drop drop
+    # => [nonce+1]
+    exec.account::incr_nonce
+
+    # debug statement with client
+    push.111 debug.stack drop
+
+    # => []
+    exec.sys::truncate_stack
 end

@@ -22,7 +22,7 @@ begin
 
     push.101 debug.stack drop
 
-    call.0xa38d7690d06d70cee314ccbd0ea970ab401ca20643eb8081aa0e2f837f134881
+    call.{test_proc}
 
     mem_loadw call.wallet::receive_asset
 

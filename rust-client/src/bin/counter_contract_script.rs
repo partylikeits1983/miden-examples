@@ -1,13 +1,13 @@
-use miden_client::accounts::AccountStorageMode;
 use miden_client::{
-    accounts::{AccountData, AccountTemplate},
+    accounts::AccountData,
     transactions::{TransactionKernel, TransactionRequest},
-    ClientError,
+    ClientError, Word,
 };
 use miden_objects::accounts::AccountComponent;
+use miden_objects::accounts::StorageSlot;
 use miden_objects::assembly::Assembler;
-
 use miden_objects::crypto::hash::rpo::RpoDigest;
+
 use rust_client::common::{create_new_account, initialize_client};
 use std::fs;
 use std::path::Path;
@@ -19,25 +19,8 @@ async fn main() -> Result<(), ClientError> {
     let mut client = initialize_client().await?;
 
     //------------------------------------------------------------
-    // STEP 0: Create a basic account
-    //------------------------------------------------------------
-
-    let wallet_template = AccountTemplate::BasicWallet {
-        mutable_code: false,
-        storage_mode: AccountStorageMode::Public,
-    };
-
-    // Create user account
-    let (user_account, _user_seed) = client.new_account(wallet_template).await?;
-    println!(
-        "Successfully created user wallet. ID: {:?}",
-        user_account.id()
-    );
-
-    //------------------------------------------------------------
     // STEP 1: Create a basic counter contract
     //------------------------------------------------------------
-
     println!("\n[STEP 1] Creating Counter Contract.");
 
     // Initializing Account
@@ -47,9 +30,13 @@ async fn main() -> Result<(), ClientError> {
     let account_code = fs::read_to_string(file_path).expect("Failed to read the file");
 
     let assembler: Assembler = TransactionKernel::assembler().with_debug_mode(true);
-    let account_component = AccountComponent::compile(account_code, assembler, vec![])
-        .unwrap()
-        .with_supports_all_types();
+    let account_component = AccountComponent::compile(
+        account_code,
+        assembler,
+        vec![StorageSlot::Value(Word::default())],
+    )
+    .unwrap()
+    .with_supports_all_types();
 
     let (counter_contract, counter_seed, auth_secret_key) = create_new_account(account_component);
 
@@ -62,34 +49,42 @@ async fn main() -> Result<(), ClientError> {
         auth_secret_key.clone(),
     );
 
+    // Import to client
+    client
+        .import_account(counter_contract_account_data)
+        .await
+        .unwrap();
+
+    // procedure roots
     let procedures = counter_contract.code().procedure_roots();
     let procedures_vec: Vec<RpoDigest> = procedures.collect();
     for (index, procedure) in procedures_vec.iter().enumerate() {
         println!("Procedure {}: {:?}", index + 1, procedure.to_hex());
     }
 
-    client
-        .import_account(counter_contract_account_data)
-        .await
-        .unwrap();
+    println!("number of procedures: {}", procedures_vec.len());
 
     //------------------------------------------------------------
     // STEP 2: Call Counter Contract with script
     //------------------------------------------------------------
     println!("\n[STEP 2] Call Counter Contract With Script");
 
+    // --- 1) Grab the procedure #2 hash and prepare it for insertion into the script
+    let procedure_2_hash = procedures_vec[0].to_hex();
+    let procedure_call = format!("{}", procedure_2_hash);
+
+    // --- 2) Load MASM script
     let file_path = Path::new("../masm/scripts/counter_script.masm");
-    let code = fs::read_to_string(file_path).expect("Failed to read the file");
+    let original_code = fs::read_to_string(file_path).expect("Failed to read the file");
 
-    let tx_script = client.compile_tx_script(vec![], &code).unwrap();
+    // --- 3) Replace {increment_count} in the script with the actual call line
+    let replaced_code = original_code.replace("{increment_count}", &procedure_call);
+    println!("Final script:\n{}", replaced_code);
 
-    let data = client.get_account(counter_contract.id()).await.unwrap();
-    println!(
-        "account id: {:?} hash:{:?}",
-        counter_contract.id(),
-        data.0.hash()
-    );
+    // --- 4) Compile the script (now containing the procedure #2 hash)
+    let tx_script = client.compile_tx_script(vec![], &replaced_code).unwrap();
 
+    // --- 5) Execute the transaction
     let tx_increment_request = TransactionRequest::new()
         .with_custom_script(tx_script)
         .unwrap();
@@ -99,10 +94,7 @@ async fn main() -> Result<(), ClientError> {
         .await
         .unwrap();
 
-    println!(
-        "tx result: {:?}",
-        tx_result.executed_transaction().id()
-    );
+    println!("tx result id: {:?}", tx_result.executed_transaction().id());
 
     let _ = client.submit_transaction(tx_result).await;
 

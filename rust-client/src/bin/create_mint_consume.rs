@@ -6,8 +6,8 @@ use miden_client::{
     transactions::{OutputNote, PaymentTransactionData, TransactionRequest},
     ClientError, Felt,
 };
-use miden_objects::accounts::get_account_seed;
 use miden_lib::notes::create_p2id_note;
+use miden_objects::accounts::get_account_seed;
 use rand::Rng;
 
 use rust_client::common::initialize_client;
