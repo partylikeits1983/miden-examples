@@ -1,4 +1,4 @@
-# Tutorial #2: Mint, Consume, Send
+# Mint, Consume, and Send Assets
 
 *Using the Miden Client in Rust & TypeScript to Mint, Consume, and Send Assets*
 
@@ -6,18 +6,17 @@
 
 In the previous section we covered how to create an account and deploy a faucet. In this section we will mint tokens from the faucet for *Alice*, consume these created notes, and then show how to send assets to other accounts.
 
+## What We'll Cover
+* Minting tokens from a faucet
+* Consuming notes
+* Sending tokens to other users
+
 ### Running the Example
 
 To run the tutorial code:
 ```bash
 cargo run --release --bin create_mint_consume
 ```
-
-## What We'll Cover
-* Minting tokens from a faucet
-* Consuming notes
-* Sending tokens to other users
-
 
 ## Step 1: Minting Tokens from the Faucet
 

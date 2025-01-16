@@ -1,4 +1,4 @@
-# Tutorial #1: Creating Accounts and Faucets 
+# Creating Accounts and Faucets 
 
 *Using the Miden Client in Rust & TypeScript to Create Accounts and Deploy Faucets*
 

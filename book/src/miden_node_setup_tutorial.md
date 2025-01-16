@@ -1,6 +1,10 @@
 # Miden Node Setup Tutorial
 
-There are two ways of connecting to the Miden node. The quickest way is to connect to the miden-testnet. The other way is to connect to spin up the Miden node locally.
+There are two ways of connecting to the Miden node:
+1) Connect to the Miden Testnet 
+2) Run the Miden node locally
+
+The quickest way is to connect to the Miden testnet. The other way is to spin up the Miden node locally.
 
 ## Miden Testnet Node Endpoint
 
@@ -8,8 +12,9 @@ This is the Miden testnet node endpoint:
 ```
 http://18.203.155.106:57291
 ```
+## Running the Miden Node Locally
 
-If you want to run your tests completely locally, you can run the miden node locally by executing the following commands:
+If you want to run your tests completely locally, you can start the miden node by executing the following commands:
 
 Installing the Miden node: 
 ```bash
@@ -35,4 +40,4 @@ rm -rf node/storage/accounts
 rm -rf node/storage/blocks
 ```
 
-To specify which miden node you are using, you can specify the miden node endpoint in the `miden-client.toml` file.
+To specify which miden node you are using with the examples in the rust-client, you can specify the miden node endpoint in the `miden-client.toml` file.

@@ -1,0 +1,519 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Miden Tutorials</title>
+        <meta name="robots" content="noindex">
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Miden Tutorials</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="introduction"><a class="header" href="#introduction">Introduction</a></h1>
+<p>This repository contains concrete, basic examples of how to build applications on Miden. The goal is to make getting up to speed with building on Miden as quick and simple as possible.</p>
+<p>All of the tutorials are accompanied by code examples in Rust and TypeScript, which can be found in the <a href="https://github.com/0xPolygonMiden/miden-tutorials">Miden Tutorials</a> repository.</p>
+<p>The tutorials repository is separated into four main parts:</p>
+<ol>
+<li><strong>masm</strong> directory – Contains Miden assembly code used in the tutorials.</li>
+<li><strong>node</strong> directory - Contains the necessary config files for running the miden-node locally.</li>
+<li><strong>rust-client</strong> directory – Contains examples of using the Miden Rust client.</li>
+<li><strong>web-client</strong> directory – Contains examples of using the Miden web client in the browser.</li>
+</ol>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="tutorials"><a class="header" href="#tutorials">Tutorials</a></h1>
+<ul>
+<li><a href="./miden_node_setup_tutorial.html">Miden Node Setup</a></li>
+<li><a href="./create_deploy_tutorial.html">Create and deploy accounts</a></li>
+<li><a href="./mint_consume_send_tutorial.html">Mint, Consume, and Send Assets</a></li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="miden-node-setup-tutorial"><a class="header" href="#miden-node-setup-tutorial">Miden Node Setup Tutorial</a></h1>
+<p>There are two ways of connecting to the Miden node:</p>
+<ol>
+<li>Connect to the Miden Testnet</li>
+<li>Run the Miden node locally</li>
+</ol>
+<p>The quickest way is to connect to the Miden testnet. The other way is to spin up the Miden node locally.</p>
+<h2 id="miden-testnet-node-endpoint"><a class="header" href="#miden-testnet-node-endpoint">Miden Testnet Node Endpoint</a></h2>
+<p>This is the Miden testnet node endpoint:</p>
+<pre><code>http://18.203.155.106:57291
+</code></pre>
+<h2 id="running-the-miden-node-locally"><a class="header" href="#running-the-miden-node-locally">Running the Miden Node Locally</a></h2>
+<p>If you want to run your tests completely locally, you can start the miden node by executing the following commands:</p>
+<p>Installing the Miden node:</p>
+<pre><code class="language-bash">cargo install miden-node --locked --features testing
+</code></pre>
+<p>cd into the <code>miden-tutorials</code> directory and run the following commands:</p>
+<pre><code class="language-bash">miden-node make-genesis \
+  --inputs-path  node/config/genesis.toml \
+  --output-path node/storage/genesis.dat
+
+cd node/storage
+miden-node start \
+  --config node/config/miden-node.toml \
+  node
+</code></pre>
+<p><em>If you need to reset the local state of the node:</em></p>
+<pre><code class="language-bash">rm -rf rust-client/store.sqlite3 
+rm -rf node/storage/accounts
+rm -rf node/storage/blocks
+</code></pre>
+<p>To specify which miden node you are using with the examples in the rust-client, you can specify the miden node endpoint in the <code>miden-client.toml</code> file.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="creating-accounts-and-faucets"><a class="header" href="#creating-accounts-and-faucets">Creating Accounts and Faucets</a></h1>
+<p><em>Using the Miden Client in Rust &amp; TypeScript to Create Accounts and Deploy Faucets</em></p>
+<p>In this tutorial, we're going to explore how to get started with the Polygon Miden client in both Rust and TypeScript, walking through creating accounts and deploying faucets.</p>
+<h2 id="what-well-cover"><a class="header" href="#what-well-cover">What We'll Cover</a></h2>
+<ul>
+<li>Understanding the difference between public vs. private accounts &amp; notes</li>
+<li>Instantiating the miden-client</li>
+<li>Creating new accounts (public or private)</li>
+<li>Deploying a faucet</li>
+</ul>
+<h2 id="public-vs-private-accounts--notes"><a class="header" href="#public-vs-private-accounts--notes">Public vs. Private Accounts &amp; Notes</a></h2>
+<p>Before we dive into the coding side of things, let's clarify the concepts of public vs. private Notes and Accounts on Miden:</p>
+<ul>
+<li>Public Accounts: The account's data and code are stored on-chain and are openly visible, including its assets.</li>
+<li>Private Accounts: The account's state and logic are off-chain, only known to its owner.</li>
+<li>Public Notes: The note's state is visible to anyone - perfect for scenarios where transparency is desired.</li>
+<li>Private Notes: The note's state is stored off-chain, you will need to share the note data with the relevant parties (via email or Telegram) for them to be able to consume.</li>
+</ul>
+<p><em>It is useful to think of notes on Miden as "cryptographic cashier's checks" that allow users to send tokens. If the note is private, the note transfer is only known to the sender and receiver.</em></p>
+<h2 id="overview"><a class="header" href="#overview">Overview</a></h2>
+<p>In this tutorial we will create a miden account for <em>Alice</em> and then deploy a fungible faucet. In the next section we will mint tokens from the faucet, and then sending the tokens from Alice's account to other Miden accounts.</p>
+<p>You can follow along with the tutorial by taking a look at <code>/rust-client/create_mint_consume.rs</code>.</p>
+<h3 id="node-setup"><a class="header" href="#node-setup">Node Setup</a></h3>
+<p>To follow along with the tutorial using Rust or TypeScript, you'll need to connect to a running Miden node. There are two ways of doing this. By default, the examples connect to the Miden testnet node, however, if you want to run the node locally, follow the instructions in <code>docs/miden_node_setup_tutorial.md</code></p>
+<h3 id="running-the-example"><a class="header" href="#running-the-example">Running the Example</a></h3>
+<p>To run the tutorial code:</p>
+<pre><code class="language-bash">cargo run --release --bin create_mint_consume
+</code></pre>
+<h2 id="step-1-initializing-the-client"><a class="header" href="#step-1-initializing-the-client">Step 1: Initializing the Client</a></h2>
+<p>Before we can interact with the Miden network, we need to instantiate the client. The main parameters when instantiating the miden-client are the rpc endpoint and the transaction prover. The full example of instantiating the client in rust is in the <code>rust-client/src/common.rs</code> file.</p>
+<p>This is how to instantiate the client in Rust &amp; TypeScript:</p>
+<details>
+<summary>Rust</summary>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let client = Client::new(
+    rpc_client,              // RPC endpoint  
+    rng_for_client,          // rng
+    arc_store,               // store 
+    Arc::new(authenticator), // signature authenticator
+    Arc::new(tx_prover),     // tx prover (local or delegated)
+    true,                    // debug mode
+);
+<span class="boring">}</span></code></pre></pre>
+</details>
+<details>
+<summary>TypeScript</summary>
+<pre><code class="language-TypeScript">const nodeEndpoint = 'http://18.203.155.106:57291';
+let webClient = webClient.create_client(nodeEndpoint)
+</code></pre>
+</details>
+<h2 id="step-2-creating-a-wallet"><a class="header" href="#step-2-creating-a-wallet">Step 2: Creating a Wallet</a></h2>
+<p>To create a wallet for Alice using the miden client, we specify the account type by specifying if the account code is mutable or immutable and whether the account is public or private. In the examples below we create a mutable public account for Alice.</p>
+<details>
+<summary>Rust</summary>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let alice_template = AccountTemplate::BasicWallet {
+    mutable_code: true,
+    storage_mode: AccountStorageMode::Public,
+};
+
+let (alice_account, _alice_seed) = client.new_account(alice_template).await?;
+<span class="boring">}</span></code></pre></pre>
+</details>
+<details>
+<summary>TypeScript</summary>
+<pre><code class="language-TypeScript">const accountId = await webClient.new_wallet(
+  AccountStorageMode.public(), // storage type
+  true                         // mutable
+);
+</code></pre>
+</details>
+<h2 id="step-3-deploying-a-fungible-faucet"><a class="header" href="#step-3-deploying-a-fungible-faucet">Step 3: Deploying a Fungible Faucet</a></h2>
+<p>For Alice to have testnet assets, we need to first deploy a faucet. A faucet account on Miden, mints fungible tokens. We'll create a public faucet with a token symbol, decimals, and a max supply. We will use this faucet to mint tokens to Alice's account.</p>
+<details>
+<summary>Rust</summary>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let faucet_template = AccountTemplate::FungibleFaucet {
+    token_symbol: TokenSymbol::new("MID").unwrap(),
+    decimals: 8,
+    max_supply: 1_000_000,
+    storage_mode: AccountStorageMode::Public,
+};
+
+let (faucet_account, _faucet_seed) = client.new_account(faucet_template).await?;
+<span class="boring">}</span></code></pre></pre>
+</details>
+<details>
+<summary>TypeScript</summary>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>const faucetId = await webClient.new_faucet(
+AccountStorageMode.public(), // storage mode
+false,                       // is non fungible (only fungible currently supported)
+'MID',                       // Token symbol
+8,                           // Decimals
+BigInt(1_000_000)            // max supply
+);
+<span class="boring">}</span></code></pre></pre>
+</details>
+<p><em>When tokens are minted from this faucet, each token batch is represented as a "note" (UTXO). You can think of a Miden Note as a cryptographic cashier's check that has certain spend conditions attached to it.</em></p>
+<h2 id="summary"><a class="header" href="#summary">Summary</a></h2>
+<p>In this section we explained how to instantiate the miden-client, create a wallet account, and deploy a faucet. In the next section we will cover how to mint tokens from the faucet, consume notes, and send tokens to other accounts.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="mint-consume-and-send-assets"><a class="header" href="#mint-consume-and-send-assets">Mint, Consume, and Send Assets</a></h1>
+<p><em>Using the Miden Client in Rust &amp; TypeScript to Mint, Consume, and Send Assets</em></p>
+<h2 id="overview-1"><a class="header" href="#overview-1">Overview</a></h2>
+<p>In the previous section we covered how to create an account and deploy a faucet. In this section we will mint tokens from the faucet for <em>Alice</em>, consume these created notes, and then show how to send assets to other accounts.</p>
+<h2 id="what-well-cover-1"><a class="header" href="#what-well-cover-1">What We'll Cover</a></h2>
+<ul>
+<li>Minting tokens from a faucet</li>
+<li>Consuming notes</li>
+<li>Sending tokens to other users</li>
+</ul>
+<h3 id="running-the-example-1"><a class="header" href="#running-the-example-1">Running the Example</a></h3>
+<p>To run the tutorial code:</p>
+<pre><code class="language-bash">cargo run --release --bin create_mint_consume
+</code></pre>
+<h2 id="step-1-minting-tokens-from-the-faucet"><a class="header" href="#step-1-minting-tokens-from-the-faucet">Step 1: Minting Tokens from the Faucet</a></h2>
+<p>To mint notes with tokens from the faucet we created, Alice needs to call the faucet with a mint transaction request.</p>
+<details>
+<summary>Rust</summary>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let amount: i32 = 100;
+let fungible_asset = FungibleAsset::new(faucet_account.id(), amount)
+    .unwrap();
+
+let transaction_request = TransactionRequest::mint_fungible_asset(
+    fungible_asset.clone(), // fungible asset id
+    alice_account.id(),     // target account id
+    NoteType::Public,       // minted note type
+    client.rng(),           // rng 
+)
+.unwrap();
+
+let tx_execution_result = client
+    .new_transaction(faucet_account.id(), transaction_request)
+    .await?;
+
+
+client.submit_transaction(tx_execution_result).await?;
+<span class="boring">}</span></code></pre></pre>
+</details>
+<details>
+<summary>TypeScript</summary>
+<pre><code class="language-TypeScript">const newTxnResult = await webClient.new_mint_transaction(
+  _walletId,          // target wallet id
+  _faucetId,          // faucet id
+  NoteType.public(),  // Note Type
+  amount              // amount
+);
+</code></pre>
+</details>
+<h2 id="step-2-identifying-consumable-notes"><a class="header" href="#step-2-identifying-consumable-notes">Step 2: Identifying Consumable Notes</a></h2>
+<p>Once Alice has minted a note from the faucet, she will eventually want to spend the tokens that she received in the note created by the mint transaction. To identify notes that are ready to consume, the miden-client has a useful function <code>get_consumable_notes</code>. It is also important to sync the state of the client before calling the <code>get_consumable_notes</code> function.</p>
+<p><em>Tip: If you know how many notes to expect after a transaction, use an await or loop condition to check how many notes of the type you expect are available for consumption instead of using a set timeout before calling <code>get_consumable_notes</code>. This ensures your application isn't idle for longer than necessary.</em></p>
+<h4 id="identifying-which-notes-are-available"><a class="header" href="#identifying-which-notes-are-available">Identifying which notes are available:</a></h4>
+<details>
+<summary>Rust</summary>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let consumable_notes = client.get_consumable_notes(Some(alice_account.id())).await?;
+<span class="boring">}</span></code></pre></pre>
+</details>
+<details>
+<summary>TypeScript</summary>
+<pre><code class="language-TypeScript">let notes = await webClient.get_consumable_notes(_accountId);
+</code></pre>
+</details>
+<h2 id="step-3-consuming-multiple-notes-in-a-single-transaction"><a class="header" href="#step-3-consuming-multiple-notes-in-a-single-transaction">Step 3: Consuming multiple notes in a single transaction:</a></h2>
+<p>Now that we've identified the notes ready to consume, we can consume multiple notes in a single transaction. After consuming the notes, Alice's wallet balance will be updated.</p>
+<details>
+<summary>Rust</summary>
+<pre><code class="language-Rust">let transaction_request = TransactionRequest::consume_notes(list_of_note_ids);
+let tx_execution_result = client
+    .new_transaction(alice_account.id(), transaction_request)
+    .await?;
+
+client.submit_transaction(tx_execution_result).await?;
+</code></pre>
+</details>
+<details>
+<summary>TypeScript</summary>
+<pre><code class="language-TypeScript">const consumeTransactionResult = await webClient.new_consume_transaction(
+  _targetAccountId,
+  [noteId]
+);
+</code></pre>
+</details>
+<h2 id="step-4-sending-tokens-to-other-accounts"><a class="header" href="#step-4-sending-tokens-to-other-accounts">Step 4: Sending Tokens to Other Accounts</a></h2>
+<p>Now that Alice has tokens in her wallet, she wants to send some tokens to some of her friends. She has two options. She can create a separate transaction for each transfer to each friend, or she can batch the transfer in a single transaction.</p>
+<p>The standard asset transfer note on Miden is the P2ID note (Pay to Id). There is also the P2IDR variant which allows the creator of the note to reclaim the note after a certain block height.</p>
+<p>In our example, Alice will now send 50 tokens to 5 different accounts.</p>
+<p>For the sake of the example, the first four P2ID transfers are handled in a single transaction, and the fifth transfer is a standard P2ID transfer.</p>
+<h3 id="output-multiple-p2id-notes-in-a-single-transaction"><a class="header" href="#output-multiple-p2id-notes-in-a-single-transaction">Output multiple P2ID notes in a single transaction</a></h3>
+<details>
+<summary>Rust</summary>
+<pre><code class="language-Rust">let output_notes: Vec&lt;OutputNote&gt; = p2id_notes.into_iter().map(OutputNote::Full).collect();
+
+let transaction_request = TransactionRequest::new()
+    .with_own_output_notes(output_notes)
+    .unwrap();
+
+let tx_execution_result = client
+    .new_transaction(alice_account.id(), transaction_request)
+    .await?;
+
+client.submit_transaction(tx_execution_result).await?;
+</code></pre>
+</details>
+<details>
+<summary>Typescript</summary>
+<pre><code class="language-Typescript">let transaction_request = new TransactionRequest().with_own_output_notes(
+  new OutputNotesArray([OutputNote.full(note_1), OutputNote.full(note_2)])
+);
+
+await webClient.fetch_and_cache_account_auth_by_pub_key(senderAccountId);
+let transaction_result = await webClient.new_transaction(
+  senderAccountId,
+  transaction_request
+);
+
+await webClient.submit_transaction(transaction_result);
+</code></pre>
+</details>
+<h3 id="basic-p2id-transfer"><a class="header" href="#basic-p2id-transfer">Basic P2ID transfer</a></h3>
+<details>
+<summary>Rust</summary>
+<pre><code class="language-Rust">let transaction_request = TransactionRequest::pay_to_id(
+    payment_transaction,
+    None,             // recall_height: None
+    NoteType::Public, // note type is public
+    client.rng(),     // rng
+)
+.unwrap();
+
+let tx_execution_result = client
+    .new_transaction(alice_account.id(), transaction_request)
+    .await?;
+
+client.submit_transaction(tx_execution_result).await?;
+</code></pre>
+</details>
+<details>
+<summary>TypeScript</summary>
+<pre><code class="language-Typescript">const sendResult = await webClient.new_send_transaction(
+  senderAccountId,
+  targetAccId,
+  faucetAccountId,
+  NoteType.private(),
+  amount
+);
+</code></pre>
+</details>
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+        <script>
+        window.addEventListener('load', function() {
+            window.setTimeout(window.print, 100);
+        });
+        </script>
+
+    </div>
+    </body>
+</html>
