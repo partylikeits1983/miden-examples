@@ -163,14 +163,9 @@
 <li><strong>rust-client</strong> directory – Contains examples of using the Miden Rust client.</li>
 <li><strong>web-client</strong> directory – Contains examples of using the Miden web client in the browser.</li>
 </ol>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="tutorials"><a class="header" href="#tutorials">Tutorials</a></h1>
-<ul>
-<li><a href="./miden_node_setup_tutorial.html">Miden Node Setup</a></li>
-<li><a href="./create_deploy_tutorial.html">Create and deploy accounts</a></li>
-<li><a href="./mint_consume_send_tutorial.html">Mint, Consume, and Send Assets</a></li>
-</ul>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="miden-node-setup-tutorial"><a class="header" href="#miden-node-setup-tutorial">Miden Node Setup Tutorial</a></h1>
-<p>There are two ways of connecting to the Miden node:</p>
+<p>To run the Miden tutorial examples, you will need to connect to a running Miden node.</p>
+<p>There are two ways of connecting to a Miden node:</p>
 <ol>
 <li>Connect to the Miden Testnet</li>
 <li>Run the Miden node locally</li>
@@ -178,7 +173,7 @@
 <p>The quickest way is to connect to the Miden testnet. The other way is to spin up the Miden node locally.</p>
 <h2 id="miden-testnet-node-endpoint"><a class="header" href="#miden-testnet-node-endpoint">Miden Testnet Node Endpoint</a></h2>
 <p>This is the Miden testnet node endpoint:</p>
-<pre><code>http://18.203.155.106:57291
+<pre><code class="language-bash">http://18.203.155.106:57291
 </code></pre>
 <h2 id="running-the-miden-node-locally"><a class="header" href="#running-the-miden-node-locally">Running the Miden Node Locally</a></h2>
 <p>If you want to run your tests completely locally, you can start the miden node by executing the following commands:</p>
@@ -200,7 +195,25 @@ miden-node start \
 rm -rf node/storage/accounts
 rm -rf node/storage/blocks
 </code></pre>
-<p>To specify which miden node you are using with the examples in the rust-client, you can specify the miden node endpoint in the <code>miden-client.toml</code> file.</p>
+<h2 id="specifying-the-miden-node-endpoint"><a class="header" href="#specifying-the-miden-node-endpoint">Specifying the Miden Node Endpoint</a></h2>
+<p>To specify which miden node you are using with the examples in the rust-client, you can specify the miden node endpoint in the <code>miden-client.toml</code> file:</p>
+<pre><code class="language-toml">[rpc.endpoint]
+protocol = "http"
+host = "18.203.155.106" # testnet
+# host = "localhost"    # localhost
+port = 57291
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="tutorials"><a class="header" href="#tutorials">Tutorials</a></h1>
+<p>Local Node Setup:</p>
+<ul>
+<li><a href="./miden_node_setup_tutorial.html">Miden Node Setup</a></li>
+</ul>
+<p>Tutorials:</p>
+<ul>
+<li><a href="./create_deploy_tutorial.html">Creating Accounts and Faucets</a></li>
+<li><a href="./mint_consume_send_tutorial.html">Mint, Consume, and Send Assets</a></li>
+<li><a href="./deploying_counter_contract.html">Deploying a Counter Contract</a></li>
+</ul>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="creating-accounts-and-faucets"><a class="header" href="#creating-accounts-and-faucets">Creating Accounts and Faucets</a></h1>
 <p><em>Using the Miden Client in Rust &amp; TypeScript to Create Accounts and Deploy Faucets</em></p>
 <p>In this tutorial, we're going to explore how to get started with the Polygon Miden client in both Rust and TypeScript, walking through creating accounts and deploying faucets.</p>
@@ -456,7 +469,10 @@ client.submit_transaction(tx_execution_result).await?;
   amount
 );
 </code></pre>
-</details>
+</details><div style="break-before: page; page-break-before: always;"></div><h1 id="deploying-a-counter-contract"><a class="header" href="#deploying-a-counter-contract">Deploying a Counter Contract</a></h1>
+<p><em>Using the Miden Client in Rust to Deploy a Counter Contract</em></p>
+<p>In this tutorial, we're going to build a counter smart contract that other users can increment. In the first part of this tutorial we will deploy the counter contract to Miden and in the second part of this tutorial we will call various functions in the smart contract.</p>
+
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">

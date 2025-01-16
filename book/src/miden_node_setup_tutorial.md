@@ -1,6 +1,8 @@
 # Miden Node Setup Tutorial
 
-There are two ways of connecting to the Miden node:
+To run the Miden tutorial examples, you will need to connect to a running Miden node. 
+
+There are two ways of connecting to a Miden node:
 1) Connect to the Miden Testnet 
 2) Run the Miden node locally
 
@@ -9,7 +11,7 @@ The quickest way is to connect to the Miden testnet. The other way is to spin up
 ## Miden Testnet Node Endpoint
 
 This is the Miden testnet node endpoint:
-```
+```bash
 http://18.203.155.106:57291
 ```
 ## Running the Miden Node Locally
@@ -40,4 +42,14 @@ rm -rf node/storage/accounts
 rm -rf node/storage/blocks
 ```
 
-To specify which miden node you are using with the examples in the rust-client, you can specify the miden node endpoint in the `miden-client.toml` file.
+## Specifying the Miden Node Endpoint 
+
+To specify which miden node you are using with the examples in the rust-client, you can specify the miden node endpoint in the `miden-client.toml` file:
+
+```toml
+[rpc.endpoint]
+protocol = "http"
+host = "18.203.155.106" # testnet
+# host = "localhost"    # localhost
+port = 57291
+```
