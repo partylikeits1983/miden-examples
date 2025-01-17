@@ -10,12 +10,12 @@ use miden_client::{
     transactions::{LocalTransactionProver, ProvingOptions},
     Client, ClientError, Felt,
 };
+use miden_lib::accounts::auth::RpoFalcon512;
 use miden_objects::{
     accounts::{AccountBuilder, AccountComponent, AuthSecretKey},
     crypto::dsa::rpo_falcon512::{PublicKey, SecretKey},
     Word,
 };
-use miden_lib::accounts::auth::RpoFalcon512;
 
 use figment::{
     providers::{Format, Toml},

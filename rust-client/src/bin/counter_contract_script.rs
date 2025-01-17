@@ -41,7 +41,10 @@ async fn main() -> Result<(), ClientError> {
     let (counter_contract, counter_seed, auth_secret_key) = create_new_account(account_component);
 
     println!("counter_contract hash: {:?}", counter_contract.hash());
-    println!("counter_contract accountId: {:?}", counter_contract.id());
+    println!(
+        "counter_contract accountId: {:?}",
+        counter_contract.id().to_hex()
+    );
 
     let counter_contract_account_data = AccountData::new(
         counter_contract.clone(),
