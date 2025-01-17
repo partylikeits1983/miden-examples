@@ -1,6 +1,3 @@
-default_account_id = "0x8a35215eabae3321"
-token_symbol_map_filepath = "token_symbol_map.toml"
-
 [rpc]
 timeout_ms = 10000
 

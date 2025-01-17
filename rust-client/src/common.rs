@@ -1,9 +1,5 @@
-use figment::{
-    providers::{Format, Toml},
-    Figment,
-};
-use miden_client::accounts::AccountStorageMode;
 use miden_client::{
+    accounts::{Account, AccountStorageMode},
     config::RpcConfig,
     crypto::RpoRandomCoin,
     rpc::TonicRpcClient,
@@ -15,16 +11,21 @@ use miden_client::{
     Client, ClientError, Felt,
 };
 use miden_objects::{
-    accounts::{Account, AccountBuilder, AccountComponent, AuthSecretKey},
+    accounts::{AccountBuilder, AccountComponent, AuthSecretKey},
     crypto::dsa::rpo_falcon512::{PublicKey, SecretKey},
     Word,
 };
-use serde::Deserialize;
-use std::{path::Path, sync::Arc};
-
 use miden_lib::accounts::auth::RpoFalcon512;
+
+use figment::{
+    providers::{Format, Toml},
+    Figment,
+};
 use rand::Rng;
 use rand_chacha::{rand_core::SeedableRng, ChaCha20Rng};
+
+use serde::Deserialize;
+use std::{path::Path, sync::Arc};
 
 /// Name of your local TOML file containing client config.
 /// Adjust this if you store it in another place/name.
@@ -106,8 +107,6 @@ pub fn create_new_account(
         .with_component(RpoFalcon512::new(PublicKey::new(pub_key)))
         .build()
         .unwrap();
-    // .build_testing()
-    // .unwrap();
 
     (account, Some(seed), auth_secret_key)
 }
