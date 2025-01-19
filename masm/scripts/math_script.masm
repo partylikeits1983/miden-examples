@@ -1,0 +1,9 @@
+begin
+    # => []
+    push.1.2.3.4.5
+    call.{proc}
+
+    debug.stack
+
+    dropw dropw
+end

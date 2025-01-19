@@ -1,0 +1,8 @@
+export.advice_test
+
+    adv_push.1
+    push.111 debug.stack drop
+    drop
+
+
+end
